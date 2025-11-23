@@ -2,6 +2,7 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -9,21 +10,21 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ReqresUserTests {
 
+    private static final String UPDATE_USER_ENDPOINT = "/api/users/{userId}";
+
     @BeforeAll
     public static void setUp() {
-        RestAssured.baseURI = "https://reqres.in";
-        RestAssured.requestSpecification = new RequestSpecBuilder()
-                .addHeader("x-api-key", "reqres-free-v1")
-                .build();
+        RestAssured.requestSpecification = ApiSpec.baseSpec;
     }
 
     @Test
+    @DisplayName("Успешное обновление пользователя (name + job)")
     public void updateUserSuccessfulTest() {
         given()
-                .contentType(ContentType.JSON)
+                .pathParam("userId", 2)
                 .body("{\"name\":\"morpheus\",\"job\":\"zion resident\"}")
                 .when()
-                .put("/api/users/2")
+                .put(UPDATE_USER_ENDPOINT)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("morpheus"))
@@ -31,47 +32,50 @@ public class ReqresUserTests {
     }
 
     @Test
+    @DisplayName("Обновление пользователя с пустым body {}")
     public void updateUserEmptyBodyTest() {
         given()
-                .contentType(ContentType.JSON)
+                .pathParam("userId", 2)
                 .body("{}")
                 .when()
-                .put("/api/users/2")
+                .put(UPDATE_USER_ENDPOINT)
                 .then()
                 .statusCode(200);
     }
 
     @Test
+    @DisplayName("Обновление только имени пользователя (name)")
     public void updateUserNameTest() {
         given()
-                .contentType(ContentType.JSON)
+                .pathParam("userId", 2)
                 .body("{\"name\":\"neo\"}")
                 .when()
-                .put("/api/users/2")
+                .put(UPDATE_USER_ENDPOINT)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("neo"));
     }
 
     @Test
+    @DisplayName("Обновление только работы пользователя (job)")
     public void updateUserJobTest() {
         given()
-                .contentType(ContentType.JSON)
+                .pathParam("userId", 2)
                 .body("{\"job\":\"the one\"}")
                 .when()
-                .put("/api/users/2")
+                .put(UPDATE_USER_ENDPOINT)
                 .then()
                 .statusCode(200)
                 .body("job", equalTo("the one"));
     }
 
     @Test
+    @DisplayName("Обновление пользователя пустыми полями name=\"\" job=\"\"")
     public void updateUserEmptyFieldsTest() {
         given()
-                .contentType(ContentType.JSON)
+                .pathParam("userId", 2)
                 .body("{\"name\":\"\",\"job\":\"\"}")
-                .when()
-                .put("/api/users/2")
+                .put(UPDATE_USER_ENDPOINT)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo(""))
