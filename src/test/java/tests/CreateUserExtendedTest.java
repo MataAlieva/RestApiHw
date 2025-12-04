@@ -32,7 +32,7 @@ public class CreateUserExtendedTest extends TestBase {
                 given(BaseSpecs.requestSpec)
                         .body(authData)
                         .when()
-                        .post()
+                        .post("/users")
                         .then()
                         .spec(BaseSpecs.responseSpecification(201))
                         .extract().body().as(CreateResponseLombok.class)
