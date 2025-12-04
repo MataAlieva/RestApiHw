@@ -2,5 +2,6 @@ package lombok;
 
 @Data
 public class CreateBodyLombok {
-    String name,job;
+    private String name;
+    private String job;
 }

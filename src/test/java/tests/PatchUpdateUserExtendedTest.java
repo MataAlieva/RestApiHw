@@ -5,7 +5,7 @@ import lombok.PatchBodyLombok;
 import lombok.PatchResponseLombok;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import specs.PatchSpec;
+import specs.BaseSpecs;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
@@ -27,13 +27,13 @@ public class PatchUpdateUserExtendedTest extends TestBase {
         PatchResponseLombok response = step(
                 "Отправка PATCH-запроса на обновление пользователя " + userId,
                 () ->
-                        given(PatchSpec.PatchRequestSpec)
+                        given(BaseSpecs.requestSpec)
                                 .pathParam("userId", 2)
                                 .body(body)
                                 .when()
                                 .patch("users/{userId}")
                                 .then()
-                                .spec(PatchSpec.PatchResponseSpec)
+                                .spec(BaseSpecs.responseSpecification(200))
                                 .extract().body().as(PatchResponseLombok.class));
 
         step("Проверка ответа PATCH", () -> {

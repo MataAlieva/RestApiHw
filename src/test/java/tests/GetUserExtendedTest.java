@@ -4,7 +4,7 @@ import base.TestBase;
 import lombok.GetResponseLombok;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import specs.GetSpec;
+import specs.BaseSpecs;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
@@ -17,7 +17,7 @@ public class GetUserExtendedTest extends TestBase {
     public void getUserNotFoundTest() {
 
         GetResponseLombok response = step("Отправка запроса на получение пользователя", () ->
-                given(GetSpec.GetRequestSpec)
+                given(BaseSpecs.requestSpec)
                         .pathParam("userId", 23)
                         .when()
                         .get("/users/{userId}")

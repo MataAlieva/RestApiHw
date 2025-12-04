@@ -2,10 +2,9 @@ package tests;
 
 import base.TestBase;
 import io.restassured.response.Response;
-import lombok.DeleteResponseLombok;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import specs.DeleteSpec;
+import specs.BaseSpecs;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
@@ -17,7 +16,7 @@ public class DeleteUserExtendedTest extends TestBase {
     @DisplayName("Успешное удаление пользователя")
     public void deleteUserSuccessfulTest() {
 
-        Response response = given(DeleteSpec.DeleteRequestSpec)
+        Response response = given(BaseSpecs.requestSpec)
                 .pathParam("userId", 2)
                 .when()
                 .delete("/users/{userId}");

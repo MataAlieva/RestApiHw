@@ -5,11 +5,10 @@ import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import lombok.CreateBodyLombok;
 import lombok.CreateResponseLombok;
-import models.CreateBodyModel;
-import models.CreateResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import specs.CreateSpec;
+import specs.BaseSpecs;
+
 
 import static helpers.CustomAllureListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
@@ -21,31 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CreateUserExtendedTest extends TestBase {
 
-    @Test
-    @DisplayName("Успешное создание пользователя (name + job)")
-    public void createUserSuccessfulTest() {
-        CreateBodyModel authData = new CreateBodyModel();
-        authData.setName("morpheus");
-        authData.setJob("leader");
-
-        CreateResponseModel response = given()
-                .log().all()
-                .header(TestBase.header)
-                .contentType(ContentType.JSON)
-                .body(authData)
-                .when()
-                .post("/users")
-                .then()
-                .log().body()
-                .statusCode(201)
-                .body("name", equalTo("morpheus"))
-                .body("job", equalTo("leader"))
-                .extract().body().as(CreateResponseModel.class);
-        assertEquals("morpheus", response.getName());
-        assertEquals("leader", response.getJob());
-        assertNotNull(response.getId());
-        assertNotNull(response.getCreatedAt());
-    }
 
     @Test
     @DisplayName("Успешное создание пользователя (name + job)")
@@ -171,18 +145,20 @@ public class CreateUserExtendedTest extends TestBase {
         authData.setJob("leader");
 
         CreateResponseLombok response = step("Make request", () ->
-                given(CreateSpec.CreateRequestSpec)
+                given(BaseSpecs.requestSpec)
                         .body(authData)
-                .when()
+                        .when()
                         .post()
-                .then()
-                        .spec(CreateSpec.CreateResponseSpec)
-                        .extract().body().as(CreateResponseLombok.class));
+                        .then()
+                        .spec(BaseSpecs.responseSpecification(201))
+                        .extract().body().as(CreateResponseLombok.class)
+        );
 
-        step("Check response", () ->
-        assertEquals("morpheus", response.getName()));
-        assertEquals("leader", response.getJob());
-        assertNotNull(response.getId());
-        assertNotNull(response.getCreatedAt());
+        step("Check response", () -> {
+            assertEquals("morpheus", response.getName());
+            assertEquals("leader", response.getJob());
+            assertNotNull(response.getId());
+            assertNotNull(response.getCreatedAt());
+        });
     }
 }
